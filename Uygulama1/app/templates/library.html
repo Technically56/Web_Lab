@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{%block url%} <a href="{{url_for(current_url)}}">{{ title }}</a>{% endblock %}
+{% block content %}
+    <h1>Welcome To {{ username}}'s Library</h1>
+    {%for book in books %}
+        <div>
+            <p1><bold>{{ book.title }}</bold> - {{ book.author }} - {% if book.is_read %}Read{% else %}Not Read Yet{% endif %}</p1>
+        </div>
+    {% endfor %}
+{% endblock %}
