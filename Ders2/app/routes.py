@@ -8,7 +8,7 @@ from app.forms import ForgetPasswordForm, LoginForm
 @app.route('/<username>')
 def index(username=None):
     user = {'username': username or 'John Doe'}
-    return render_template('index.html', title='Home', user=user)
+    return render_template('index.html', title='Home', user=user, posts=[])
 
 
 
@@ -20,6 +20,11 @@ def login():
             form.username.data, form.remember_me.data))
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html', title='About')
 
 
 @app.route('/forget_password', methods=['GET', 'POST'])

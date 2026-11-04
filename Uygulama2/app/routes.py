@@ -33,6 +33,12 @@ def forget_password():
 
 
 
+@app.route('/about')
+def about():
+    return render_template('about.html', title='About')
+
+
+
 @app.route('/login_feedback', methods=['GET', 'POST'])
 def login_feedback():
     form = LoginFeedbackForm()
@@ -40,7 +46,7 @@ def login_feedback():
         flash('Feedback submitted by {}, email={}'.format(
             form.name.data, form.email.data))
         feedback_path = os.path.join(app.root_path, 'feedback.txt')
-        with open(feedback_path, 'a') as f:
+        with open(feedback_path, 'a', encoding='utf-8') as f:
             f.write('Feedback: {}\nName: {}\nEmail: {}\n\n'.format(
                 form.feedback.data, form.name.data, form.email.data))
         return redirect(url_for('index'))
