@@ -35,10 +35,19 @@ Web_Lab/
 │   │   └── routes.py       # Ders2 routes plus the feedback route
 │   ├── config.py           # Application configuration
 │   └── web_lab.py          # Application entry point
-├── Ders3/                  # Lesson 3: Databases and Migrations (in progress)
-│   ├── app/                # Starting point copied from Uygulama2
-│   ├── config.py           # Application configuration
-│   └── web_lab.py          # Application entry point
+├── Ders3/                  # Lesson 3: Databases and Migrations
+│   ├── app/
+│   │   ├── templates/      # Pages carried over from Uygulama2
+│   │   ├── __init__.py     # Flask app, database and migration setup
+│   │   ├── forms.py        # Flask-WTF form classes
+│   │   ├── models.py       # User and Post database models
+│   │   └── routes.py       # Page and form handling routes
+│   ├── migrations/         # Flask-Migrate migration scripts
+│   ├── .flaskenv           # Sets FLASK_APP for the flask command
+│   ├── config.py           # Application and database configuration
+│   ├── populate_db.py      # Adds sample users and posts
+│   └── web_lab.py          # Application entry point and flask shell setup
+├── .gitignore              # Files left out of version control
 ├── requirements.txt        # Pinned Python dependencies
 └── LICENSE                 # MIT License
 ```
@@ -64,9 +73,11 @@ Web_Lab/
   - A new form class with its own route and template
   - Saving submitted feedback to `app/feedback.txt`
 
-- **`Ders3`**: Databases and migrations (in progress):
-  - Starts from a copy of `Uygulama2`
-  - Will add SQLAlchemy models and Flask-Migrate, using a SQLite database
+- **`Ders3`**: Builds on `Uygulama2` with a database:
+  - `User` and `Post` SQLAlchemy models with a one-to-many relationship, stored in SQLite
+  - Schema migrations with Flask-Migrate (`flask db`)
+  - Sample data from `populate_db.py`, with passwords stored as scrypt hashes
+  - A `flask shell` setup that provides `sa`, `so`, `db`, `User` and `Post`
 
 ---
 
@@ -74,7 +85,7 @@ Web_Lab/
 
 ### Prerequisites
 
-- Python 3.10+
+- Python 3.11+
 
 ### Installation
 
@@ -99,6 +110,8 @@ Web_Lab/
 ### Configuration
 
 `Ders2`, `Uygulama2` and `Ders3` read `SECRET_KEY` from the environment and fall back to a development value if it isn't set. Set your own value anywhere other than local development.
+
+`Ders3` also reads `DATABASE_URL` from the environment and uses a SQLite file, `Ders3/app.db`, if it isn't set.
 
 ---
 
@@ -142,9 +155,17 @@ Visit `http://127.0.0.1:5000/login_feedback` in your browser.
 
 ```bash
 cd Ders3
-flask --app web_lab run
+flask db upgrade
+python populate_db.py
+flask run
 ```
-Visit `http://127.0.0.1:5000/` in your browser.
+`flask db upgrade` creates the database and its tables, and `populate_db.py` adds the sample data. You only need these two commands the first time.
+
+Visit `http://127.0.0.1:5000/` in your browser, or use `flask shell` to work with the models directly:
+
+```python
+db.session.scalars(sa.select(User)).all()
+```
 
 ---
 
