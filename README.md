@@ -47,6 +47,18 @@ Web_Lab/
 │   ├── config.py           # Application and database configuration
 │   ├── populate_db.py      # Adds sample users and posts
 │   └── web_lab.py          # Application entry point and flask shell setup
+├── Uygulama3/              # Practice 3: Post Bookmarks
+│   ├── app/
+│   │   ├── templates/      # Pages carried over from Ders3
+│   │   ├── __init__.py     # Flask app, database and migration setup
+│   │   ├── forms.py        # Flask-WTF form classes
+│   │   ├── models.py       # User, Post and Bookmark database models
+│   │   └── routes.py       # Page and form handling routes
+│   ├── migrations/         # Flask-Migrate migration scripts
+│   ├── .flaskenv           # Sets FLASK_APP for the flask command
+│   ├── config.py           # Application and database configuration
+│   ├── populate_db.py      # Seeds sample data; also supports `show` and `wipe`
+│   └── web_lab.py          # Application entry point and flask shell setup
 ├── .gitignore              # Files left out of version control
 ├── requirements.txt        # Pinned Python dependencies
 └── LICENSE                 # MIT License
@@ -79,6 +91,10 @@ Web_Lab/
   - Sample data from `populate_db.py`, with passwords stored as scrypt hashes
   - A `flask shell` setup that provides `sa`, `so`, `db`, `User` and `Post`
 
+- **`Uygulama3`**: Builds on `Ders3` with bookmarks:
+  - A `Bookmark` model linking a `User` to a `Post` they bookmarked, with its own timestamp
+  - `populate_db.py` seeds users, posts and bookmarks, and also takes a `show` argument to print them as tables or a `wipe` argument to delete all rows after confirmation
+
 ---
 
 ## 🚀 Getting Started
@@ -109,9 +125,9 @@ Web_Lab/
 
 ### Configuration
 
-`Ders2`, `Uygulama2` and `Ders3` read `SECRET_KEY` from the environment and fall back to a development value if it isn't set. Set your own value anywhere other than local development.
+`Ders2`, `Uygulama2`, `Ders3` and `Uygulama3` read `SECRET_KEY` from the environment and fall back to a development value if it isn't set. Set your own value anywhere other than local development.
 
-`Ders3` also reads `DATABASE_URL` from the environment and uses a SQLite file, `Ders3/app.db`, if it isn't set.
+`Ders3` and `Uygulama3` also read `DATABASE_URL` from the environment and otherwise fall back to a SQLite file, `app.db`, in their own directory.
 
 ---
 
@@ -165,6 +181,25 @@ Visit `http://127.0.0.1:5000/` in your browser, or use `flask shell` to work wit
 
 ```python
 db.session.scalars(sa.select(User)).all()
+```
+
+### Run Uygulama 3
+
+```bash
+cd Uygulama3
+flask db upgrade
+python populate_db.py
+flask run
+```
+`flask db upgrade` creates the database and its tables, and `populate_db.py` adds the sample users, posts and bookmarks. You only need these two commands the first time.
+
+Visit `http://127.0.0.1:5000/` in your browser.
+
+Use `populate_db.py` to inspect or reset the sample data:
+
+```bash
+python populate_db.py show   # print users, posts and bookmarks as tables
+python populate_db.py wipe   # delete all rows from the database (asks for confirmation)
 ```
 
 ---
